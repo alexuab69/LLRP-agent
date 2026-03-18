@@ -19,7 +19,7 @@ public class ReaderAdapter {
     public ReaderAdapter() {
         // Selección dinámica de reader:
         // 1) Si se define la propiedad del sistema `llrp.reader.type`, se usa esa.
-        // 2) Si no, por defecto se usa el modo mock (permite ejecutar el agente sin hardware).
+        // 2) Si no, se usa el lector LLRP genérico por defecto.
         String requested = System.getProperty("llrp.reader.type");
         if (requested == null || requested.isEmpty()) {
             requested = System.getenv("LLRP_READER_TYPE");
@@ -55,25 +55,17 @@ public class ReaderAdapter {
             case "llrp":
                 candidate = new GenericLLRPReader();
                 break;
-            case "mock":
             default:
-                candidate = new MockRFIDReader();
-                break;
+                throw new IllegalArgumentException("Unknown reader type: " + readerType);
         }
 
-        // Intentar conectar; si falla, regresar a mock para que el agente siga funcionando
+        // Intentar conectar al lector
         try {
             candidate.connect();
             realReader = candidate;
         } catch (Exception e) {
             System.err.println("Could not connect using reader type '" + readerType + "': " + e.getMessage());
-            System.err.println("Falling back to mock reader (no hardware connection)");
-            realReader = new MockRFIDReader();
-            try {
-                realReader.connect();
-            } catch (Exception ignored) {
-                // no-op
-            }
+            realReader = null;
         }
     }
 
@@ -132,46 +124,4 @@ public class ReaderAdapter {
         return inventoryRunning && (realReader != null ? realReader.isInventoryRunning() : false);
     }
 
-    /**
-     * Implementación mock para cuando no hay lector real disponible
-     */
-    private class MockRFIDReader implements RFIDReader {
-        @Override
-        public void connect() throws Exception {
-            System.out.println("Mock reader connected (no real hardware)");
-        }
-
-        @Override
-        public void disconnect() {
-            System.out.println("Mock reader disconnected");
-        }
-
-        @Override
-        public void startInventory() throws Exception {
-            System.out.println("Mock inventory started");
-        }
-
-        @Override
-        public void stopInventory() throws Exception {
-            System.out.println("Mock inventory stopped");
-        }
-
-        @Override
-        public String[] readTags() {
-            return new String[]{
-                "E2000017221101441890B3AA",
-                "E2000017221101441890B3AB"
-            };
-        }
-
-        @Override
-        public boolean isInventoryRunning() {
-            return true;
-        }
-
-        @Override
-        public void configureReader() throws Exception {
-            System.out.println("Mock reader configured");
-        }
-    }
 }
