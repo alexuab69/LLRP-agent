@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Vendor: "ThingMagic, Inc."
+Implementation-Title: com.thingmagic
+Implementation-Version: "1.37.0.80"
+Specification-Vendor: "ThingMagic, Inc."
+Name: com/thingmagic
+Created-By: 1.6.0_20 (Sun Microsystems Inc.)
+Specification-Title: "ThingMagic Mercury API"
+Specification-Version: "1.37.0"
+

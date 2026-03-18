@@ -1,0 +1,8 @@
+core_cm0plus.h:804:22:NVIC_SetPriority	24	static
+core_cm0plus.h:885:26:SysTick_Config	16	static
+osdep_KL25Z.c:14:1:SysTick_Handler	8	static
+osdep_KL25Z.c:20:1:tmr_gettime	24	static
+osdep_KL25Z.c:33:1:tmr_gettime_low	8	static
+osdep_KL25Z.c:42:1:tmr_gettime_high	16	static
+osdep_KL25Z.c:51:1:tmr_sleep	16	static
+osdep_KL25Z.c:63:1:tmr_gettimestructure	48	static

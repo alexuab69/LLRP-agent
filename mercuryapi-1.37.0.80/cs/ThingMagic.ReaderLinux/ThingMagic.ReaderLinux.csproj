@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>ThingMagic.ReaderLinux</RootNamespace>
+    <DefineConstants>$(DefineConstants);TMR_ENABLE_SERIAL_READER_ONLY</DefineConstants>
+    <OutputType>Library</OutputType>
+    <AssemblyName>MercuryAPI</AssemblyName>
+    <SignAssembly>True</SignAssembly>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="mercuryapi.snk" />
+    <Compile Include="../ThingMagic.Reader/*.cs" />
+    <Compile Update="Properties/AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.IO.Ports" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>

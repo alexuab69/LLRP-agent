@@ -1,0 +1,13 @@
+/home/player1/sources/mercuryapi-1.37.0.80/cs/net8.0/MercuryAPI.deps.json
+/home/player1/sources/mercuryapi-1.37.0.80/cs/net8.0/MercuryAPI.dll
+/home/player1/sources/mercuryapi-1.37.0.80/cs/net8.0/MercuryAPI.pdb
+/home/player1/sources/mercuryapi-1.37.0.80/cs/ThingMagic.ReaderLinux/obj/Debug/net8.0/ThingMagic.ReaderLinux.csproj.AssemblyReference.cache
+/home/player1/sources/mercuryapi-1.37.0.80/cs/ThingMagic.ReaderLinux/obj/Debug/net8.0/ThingMagic.ReaderLinux.GeneratedMSBuildEditorConfig.editorconfig
+/home/player1/sources/mercuryapi-1.37.0.80/cs/ThingMagic.ReaderLinux/obj/Debug/net8.0/ThingMagic.ReaderLinux.csproj.CoreCompileInputs.cache
+/home/player1/sources/mercuryapi-1.37.0.80/cs/ThingMagic.ReaderLinux/bin/Debug/net8.0/MercuryAPI.deps.json
+/home/player1/sources/mercuryapi-1.37.0.80/cs/ThingMagic.ReaderLinux/bin/Debug/net8.0/MercuryAPI.dll
+/home/player1/sources/mercuryapi-1.37.0.80/cs/ThingMagic.ReaderLinux/bin/Debug/net8.0/MercuryAPI.pdb
+/home/player1/sources/mercuryapi-1.37.0.80/cs/ThingMagic.ReaderLinux/obj/Debug/net8.0/MercuryAPI.dll
+/home/player1/sources/mercuryapi-1.37.0.80/cs/ThingMagic.ReaderLinux/obj/Debug/net8.0/refint/MercuryAPI.dll
+/home/player1/sources/mercuryapi-1.37.0.80/cs/ThingMagic.ReaderLinux/obj/Debug/net8.0/MercuryAPI.pdb
+/home/player1/sources/mercuryapi-1.37.0.80/cs/ThingMagic.ReaderLinux/obj/Debug/net8.0/ref/MercuryAPI.dll

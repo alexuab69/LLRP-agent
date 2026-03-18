@@ -1,0 +1,8 @@
+readasync_baremetal.c:40:6:errx	20	static
+readasync_baremetal.c:52:6:checkerr	24	static
+readasync_baremetal.c:62:6:serialPrinter	32	static
+readasync_baremetal.c:80:6:stringPrinter	32	static
+readasync_baremetal.c:88:6:parseAntennaList	40	static
+readasync_baremetal.c:169:5:main	1936	static
+readasync_baremetal.c:440:1:readCallback	152	static
+readasync_baremetal.c:452:1:exceptionCallback	24	static

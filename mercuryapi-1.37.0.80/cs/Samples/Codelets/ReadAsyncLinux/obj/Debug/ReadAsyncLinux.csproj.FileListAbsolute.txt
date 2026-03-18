@@ -1,0 +1,16 @@
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Linux/ReadAsync
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Linux/ReadAsync.deps.json
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Linux/ReadAsync.runtimeconfig.json
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Linux/ReadAsync.dll
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Linux/ReadAsync.pdb
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Samples/Codelets/ReadAsyncLinux/obj/Debug/ReadAsyncLinux.csproj.AssemblyReference.cache
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Samples/Codelets/ReadAsyncLinux/obj/Debug/ReadAsyncLinux.GeneratedMSBuildEditorConfig.editorconfig
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Samples/Codelets/ReadAsyncLinux/obj/Debug/ReadAsyncLinux.AssemblyInfoInputs.cache
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Samples/Codelets/ReadAsyncLinux/obj/Debug/ReadAsyncLinux.AssemblyInfo.cs
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Samples/Codelets/ReadAsyncLinux/obj/Debug/ReadAsyncLinux.csproj.CoreCompileInputs.cache
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Samples/Codelets/ReadAsyncLinux/obj/Debug/ReadAsyncLinux.csproj.CopyComplete
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Samples/Codelets/ReadAsyncLinux/obj/Debug/ReadAsync.dll
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Samples/Codelets/ReadAsyncLinux/obj/Debug/refint/ReadAsync.dll
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Samples/Codelets/ReadAsyncLinux/obj/Debug/ReadAsync.pdb
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Samples/Codelets/ReadAsyncLinux/obj/Debug/ReadAsyncLinux.genruntimeconfig.cache
+/home/player1/sources/mercuryapi-1.37.0.80/cs/Samples/Codelets/ReadAsyncLinux/obj/Debug/ref/ReadAsync.dll

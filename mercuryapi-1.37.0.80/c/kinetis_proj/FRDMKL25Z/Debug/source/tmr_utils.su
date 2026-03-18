@@ -1,0 +1,14 @@
+tmr_utils.c:39:1:tm_memcpy	32	static
+tmr_utils.c:59:1:tm_strcpy	24	static
+tmr_utils.c:78:1:tm_strchr	24	static
+tmr_utils.c:96:1:tm_strcasecmp	24	static
+tmr_utils.c:128:1:tm_gettime_consistent	24	static
+tmr_utils.c:147:1:tm_time_subtract	16	static
+tmr_utils.c:160:5:tm_u8s_per_bits	16	static
+tmr_utils.c:166:1:TMR_stringCopy	24	static
+tmr_utils.c:180:1:TMR_makeBitMask	24	static
+tmr_utils.c:195:1:TMR_byteArrayToInt	24	static
+tmr_utils.c:209:1:TMR_byteArrayToShort	32	static
+tmr_utils.c:221:1:TMR_byteArrayToLong	32	static
+tmr_utils.c:242:1:TMR_bytesToWords	40	static
+tmr_utils.c:265:1:TMR_wordsToBytes	32	static

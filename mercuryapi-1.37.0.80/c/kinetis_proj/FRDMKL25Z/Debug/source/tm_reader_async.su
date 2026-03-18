@@ -1,0 +1,10 @@
+tm_reader_async.c:65:1:TMR_startReading	16	static
+tm_reader_async.c:299:1:reset_continuous_reading	16	static
+tm_reader_async.c:326:1:TMR_stopReading	16	static
+tm_reader_async.c:448:1:notify_read_listeners	32	static
+tm_reader_async.c:471:1:notify_stats_listeners	32	static
+tm_reader_async.c:496:1:restart_reading	24	static
+tm_reader_async.c:563:1:TMR_addReadExceptionListener	16	static
+tm_reader_async.c:624:1:notify_exception_listeners	32	static
+tm_reader_async.c:1424:1:TMR_addReadListener	16	static
+tm_reader_async.c:1556:1:TMR_addStatsListener	16	static

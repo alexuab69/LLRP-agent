@@ -1,0 +1,16 @@
+core_cm0plus.h:745:22:NVIC_EnableIRQ	16	static
+fsl_common.h:212:20:EnableIRQ	16	static
+fsl_uart.h:500:20:UART_EnableTx	16	static
+fsl_uart.h:520:20:UART_EnableRx	16	static
+fsl_uart.h:541:20:UART_WriteByte	16	static
+fsl_uart.h:555:23:UART_ReadByte	16	static
+serial_transport_KL25Z.c:75:1:UART1_IRQHandler	24	static
+serial_transport_KL25Z.c:98:1:configure_uart	16	static
+serial_transport_KL25Z.c:127:1:sendChar	32	static
+serial_transport_KL25Z.c:144:1:s_open	16	static
+serial_transport_KL25Z.c:160:1:s_sendBytes	32	static
+serial_transport_KL25Z.c:178:1:s_receiveBytes	32	static
+serial_transport_KL25Z.c:212:1:s_setBaudRate	16	static
+serial_transport_KL25Z.c:225:1:s_shutdown	16	static
+serial_transport_KL25Z.c:237:1:s_flush	16	static
+serial_transport_KL25Z.c:255:1:TMR_SR_SerialTransportNativeInit	24	static

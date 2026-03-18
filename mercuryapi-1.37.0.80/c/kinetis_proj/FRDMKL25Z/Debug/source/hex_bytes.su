@@ -1,0 +1,2 @@
+hex_bytes.c:84:1:TMR_bytesToHex	24	static
+hex_bytes.c:104:1:TMR_hexDottedQuad	24	static

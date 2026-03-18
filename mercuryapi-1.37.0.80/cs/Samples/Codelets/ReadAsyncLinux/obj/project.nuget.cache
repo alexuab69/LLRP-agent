@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "1hxwwhAUX2F+iJ1sIpS+5aKpryVLVrUHQRtUJ/fOyJHLwE9VrpekdD8YbHh4+m+3ae7iug6NXCO/VIu8sluPmA==",
+  "success": true,
+  "projectFilePath": "/home/player1/sources/mercuryapi-1.37.0.80/cs/Samples/Codelets/ReadAsyncLinux/ReadAsyncLinux.csproj",
+  "expectedPackageFiles": [
+    "/home/player1/.nuget/packages/runtime.linux-arm.runtime.native.system.io.ports/6.0.0/runtime.linux-arm.runtime.native.system.io.ports.6.0.0.nupkg.sha512",
+    "/home/player1/.nuget/packages/runtime.linux-arm64.runtime.native.system.io.ports/6.0.0/runtime.linux-arm64.runtime.native.system.io.ports.6.0.0.nupkg.sha512",
+    "/home/player1/.nuget/packages/runtime.linux-x64.runtime.native.system.io.ports/6.0.0/runtime.linux-x64.runtime.native.system.io.ports.6.0.0.nupkg.sha512",
+    "/home/player1/.nuget/packages/runtime.native.system.io.ports/6.0.0/runtime.native.system.io.ports.6.0.0.nupkg.sha512",
+    "/home/player1/.nuget/packages/runtime.osx-arm64.runtime.native.system.io.ports/6.0.0/runtime.osx-arm64.runtime.native.system.io.ports.6.0.0.nupkg.sha512",
+    "/home/player1/.nuget/packages/runtime.osx-x64.runtime.native.system.io.ports/6.0.0/runtime.osx-x64.runtime.native.system.io.ports.6.0.0.nupkg.sha512",
+    "/home/player1/.nuget/packages/system.io.ports/6.0.0/system.io.ports.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

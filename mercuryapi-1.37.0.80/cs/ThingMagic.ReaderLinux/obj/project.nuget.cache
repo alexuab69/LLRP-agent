@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "k3s6Degrf/t1hH/MIOQf50/F84gNNML8nhvugP2trcbRxmfRyNlWIWDF9xy54Ret7wbXNbZD2c3APcW479SnZw==",
+  "success": true,
+  "projectFilePath": "/home/player1/sources/mercuryapi-1.37.0.80/cs/ThingMagic.ReaderLinux/ThingMagic.ReaderLinux.csproj",
+  "expectedPackageFiles": [
+    "/home/player1/.nuget/packages/runtime.linux-arm.runtime.native.system.io.ports/8.0.0/runtime.linux-arm.runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "/home/player1/.nuget/packages/runtime.linux-arm64.runtime.native.system.io.ports/8.0.0/runtime.linux-arm64.runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "/home/player1/.nuget/packages/runtime.linux-x64.runtime.native.system.io.ports/8.0.0/runtime.linux-x64.runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "/home/player1/.nuget/packages/runtime.native.system.io.ports/8.0.0/runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "/home/player1/.nuget/packages/runtime.osx-arm64.runtime.native.system.io.ports/8.0.0/runtime.osx-arm64.runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "/home/player1/.nuget/packages/runtime.osx-x64.runtime.native.system.io.ports/8.0.0/runtime.osx-x64.runtime.native.system.io.ports.8.0.0.nupkg.sha512",
+    "/home/player1/.nuget/packages/system.io.ports/8.0.0/system.io.ports.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
