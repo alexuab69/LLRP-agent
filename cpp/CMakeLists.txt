@@ -3,6 +3,7 @@ project(LLRPAgent CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(ENABLE_M7E "Build optional ThingMagic M7E support" OFF)
 
 # ── Rutas al SDK ────────────────────────────────────────────────────────────

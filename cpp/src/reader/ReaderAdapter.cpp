@@ -71,6 +71,9 @@ void ReaderAdapter::setReaderType(const std::string &type) {
 // ────────────────────────────────────────────────────────────────────────────
 
 void ReaderAdapter::startInventory() {
+    if (inventoryRunning_) {
+        return;
+    }
     if (!realReader_) return;
     try {
         realReader_->startInventory();
@@ -111,6 +114,9 @@ bool ReaderAdapter::isInventoryRunning() const {
 // ────────────────────────────────────────────────────────────────────────────
 
 void ReaderAdapter::startPeriodicTagPrint() {
+    if (timerThread_.joinable()) {
+        return;
+    }
     timerRunning_ = true;
     timerThread_ = std::thread([this]() {
         while (timerRunning_) {

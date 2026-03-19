@@ -116,6 +116,14 @@ void GenericLLRPReader::disconnect() {
 // ────────────────────────────────────────────────────────────────────────────
 
 void GenericLLRPReader::startInventory() {
+    if (inventoryRunning_) {
+        return;
+    }
+
+    if (readerThread_.joinable()) {
+        readerThread_.join();
+    }
+
     {
         std::lock_guard<std::mutex> lk(lastLogMtx_);
         lastLoggedMs_.clear();
