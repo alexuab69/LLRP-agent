@@ -1,0 +1,26 @@
+# Build outputs
+cpp/build/
+lib/ltkcpp_build/
+
+# Local editor settings
+.vscode/
+
+# Temporary diagnostics generated during setup/troubleshooting
+build_cpp.log
+example_build.txt
+example_build_err.txt
+example_out.txt
+tools_check.txt
+tools_check_err.txt
+pacman_search.txt
+pacman_search_err.txt
+ltknet_list.txt
+ltknet_list2.txt
+ltknet_list_err.txt
+lib_format.txt
+
+# Optional local helper scripts used during one-off setup
+build_cpp.bat
+build_cpp.sh
+do_build.sh
+test_example.bat
