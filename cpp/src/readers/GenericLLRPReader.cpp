@@ -157,15 +157,24 @@ std::string buildTagEventJson(CTagReportData* td)
     const bool hasReadCount = td && td->getTagSeenCount();
     const long long readCount = hasReadCount ? td->getTagSeenCount()->getTagCount() : 0;
 
+    // Channel Index to Frequency mapping (FCC 900 MHz region)
+    // Channel 0 → 902 MHz, 1 → 903 MHz, etc.
+    // For now, using null if not available since LTKCPP may not expose actual frequency
     const bool hasChannelIndex = td && td->getChannelIndex();
-    const long long channelIndex = hasChannelIndex ? td->getChannelIndex()->getChannelIndex() : 0;
-
-    std::string timestamp = nowIso8601Utc();
-    if (td && td->getFirstSeenTimestampUTC()) {
-        timestamp = iso8601FromEpochMicros(td->getFirstSeenTimestampUTC()->getMicroseconds());
-    } else if (td && td->getLastSeenTimestampUTC()) {
-        timestamp = iso8601FromEpochMicros(td->getLastSeenTimestampUTC()->getMicroseconds());
+    const long long channelIndex = hasChannelIndex ? td->getChannelIndex()->getChannelIndex() : -1;
+    
+    // Map channel index to approximate frequency (FCC region 900 MHz ISM band)
+    std::string frequency = "null";
+    if (hasChannelIndex && channelIndex >= 0 && channelIndex <= 63) {
+        // Simplified mapping: channel index * 1 MHz starting from 902 MHz
+        long long freqMHz = 902 + channelIndex;
+        frequency = std::to_string(freqMHz);
     }
+
+    // Usar timestamp del system actual en lugar del timestamp del reader (que puede tener offset)
+    std::string timestamp = nowIso8601Utc();
+    // Nota: getFirstSeenTimestampUTC() puede tener offset de timezone del reader
+    // Se prefiere usar el timestamp del sistema del agente
 
     // Base LLRP reports don't always include phase, doppler, TID, or user memory.
     std::ostringstream oss;
@@ -177,7 +186,7 @@ std::string buildTagEventJson(CTagReportData* td)
         << "\"RSSI\":" << toJsonNumberOrNull(hasRssi, rssi) << ','
         << "\"antenna\":" << toJsonNumberOrNull(hasAntenna, antenna) << ','
         << "\"readCount\":" << toJsonNumberOrNull(hasReadCount, readCount) << ','
-        << "\"frequency\":" << toJsonNumberOrNull(hasChannelIndex, channelIndex) << ','
+        << "\"frequency\":" << frequency << ','
         << "\"phase\":null,"
         << "\"doppler\":null,"
         << "\"TID\":null,"
