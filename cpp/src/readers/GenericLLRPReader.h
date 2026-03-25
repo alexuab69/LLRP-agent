@@ -58,6 +58,7 @@ private:
     void sendRawMessage(const uint8_t *data, size_t len);
     void sendROSpecControl(uint16_t msgType, uint32_t msgId, uint32_t rospecId);
     void sendAddROSpec();
+    void sendDeleteROSpec();
     void sendEnableROSpec();
     void sendStartROSpec();
     void sendStopROSpec();

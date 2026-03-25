@@ -13,6 +13,7 @@ extern LLRP::CTypeRegistry *g_pTypeRegistry;
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -35,6 +36,154 @@ CMessage* decodeMessageFromFrame(const CTypeRegistry* typeRegistry, const std::v
 {
     CFrameDecoder decoder(typeRegistry, const_cast<unsigned char*>(frame.data()), static_cast<unsigned int>(frame.size()));
     return decoder.decodeMessage();
+}
+
+std::string jsonEscape(const std::string& value)
+{
+    std::ostringstream oss;
+    for (char c : value) {
+        switch (c) {
+            case '"': oss << "\\\""; break;
+            case '\\': oss << "\\\\"; break;
+            case '\b': oss << "\\b"; break;
+            case '\f': oss << "\\f"; break;
+            case '\n': oss << "\\n"; break;
+            case '\r': oss << "\\r"; break;
+            case '\t': oss << "\\t"; break;
+            default:
+                if (static_cast<unsigned char>(c) < 0x20) {
+                    oss << "\\u"
+                        << std::hex << std::setw(4) << std::setfill('0')
+                        << static_cast<int>(static_cast<unsigned char>(c));
+                } else {
+                    oss << c;
+                }
+        }
+    }
+    return oss.str();
+}
+
+std::string nowIso8601Utc()
+{
+    using namespace std::chrono;
+    const auto now = system_clock::now();
+    const auto secs = time_point_cast<std::chrono::seconds>(now);
+    const auto ms = duration_cast<milliseconds>(now - secs).count();
+
+    std::time_t tt = system_clock::to_time_t(now);
+    std::tm tmUtc{};
+#ifdef _WIN32
+    gmtime_s(&tmUtc, &tt);
+#else
+    gmtime_r(&tt, &tmUtc);
+#endif
+
+    std::ostringstream oss;
+    oss << std::put_time(&tmUtc, "%Y-%m-%dT%H:%M:%S")
+        << '.' << std::setw(3) << std::setfill('0') << ms << 'Z';
+    return oss.str();
+}
+
+std::string iso8601FromEpochMicros(llrp_u64_t micros)
+{
+    using namespace std::chrono;
+    const auto tp = system_clock::time_point{} + microseconds(micros);
+    const auto secs = time_point_cast<std::chrono::seconds>(tp);
+    const auto ms = duration_cast<milliseconds>(tp - secs).count();
+
+    std::time_t tt = system_clock::to_time_t(tp);
+    std::tm tmUtc{};
+#ifdef _WIN32
+    gmtime_s(&tmUtc, &tt);
+#else
+    gmtime_r(&tt, &tmUtc);
+#endif
+
+    std::ostringstream oss;
+    oss << std::put_time(&tmUtc, "%Y-%m-%dT%H:%M:%S")
+        << '.' << std::setw(3) << std::setfill('0') << ms << 'Z';
+    return oss.str();
+}
+
+std::string epcFromTagReport(CTagReportData* td)
+{
+    if (!td || !td->getEPCParameter()) {
+        return "";
+    }
+
+    std::ostringstream oss;
+    auto *e96 = dynamic_cast<CEPC_96*>(td->getEPCParameter());
+    if (e96) {
+        for (int i = 0; i < 12; ++i) {
+            oss << std::hex << std::setw(2) << std::setfill('0')
+                << static_cast<int>(e96->getEPC().m_aValue[i]);
+        }
+        return oss.str();
+    }
+
+    auto *edata = dynamic_cast<CEPCData*>(td->getEPCParameter());
+    if (edata) {
+        llrp_u1v_t value = edata->getEPC();
+        for (unsigned int i = 0; i < value.m_nBit / 8; ++i) {
+            oss << std::hex << std::setw(2) << std::setfill('0')
+                << static_cast<int>(value.m_pValue[i]);
+        }
+        return oss.str();
+    }
+
+    return "";
+}
+
+std::string toJsonNumberOrNull(bool hasValue, long long value)
+{
+    if (!hasValue) {
+        return "null";
+    }
+    return std::to_string(value);
+}
+
+std::string buildTagEventJson(CTagReportData* td)
+{
+    const std::string epc = epcFromTagReport(td);
+    const bool hasEpc = !epc.empty();
+
+    const bool hasAntenna = td && td->getAntennaID();
+    const long long antenna = hasAntenna ? td->getAntennaID()->getAntennaID() : 0;
+
+    const bool hasRssi = td && td->getPeakRSSI();
+    const long long rssi = hasRssi ? td->getPeakRSSI()->getPeakRSSI() : 0;
+
+    const bool hasReadCount = td && td->getTagSeenCount();
+    const long long readCount = hasReadCount ? td->getTagSeenCount()->getTagCount() : 0;
+
+    const bool hasChannelIndex = td && td->getChannelIndex();
+    const long long channelIndex = hasChannelIndex ? td->getChannelIndex()->getChannelIndex() : 0;
+
+    std::string timestamp = nowIso8601Utc();
+    if (td && td->getFirstSeenTimestampUTC()) {
+        timestamp = iso8601FromEpochMicros(td->getFirstSeenTimestampUTC()->getMicroseconds());
+    } else if (td && td->getLastSeenTimestampUTC()) {
+        timestamp = iso8601FromEpochMicros(td->getLastSeenTimestampUTC()->getMicroseconds());
+    }
+
+    // Base LLRP reports don't always include phase, doppler, TID, or user memory.
+    std::ostringstream oss;
+    oss << '{'
+        << "\"eventType\":\"RFID_TAG_READ\","
+        << "\"timestamp\":\"" << jsonEscape(timestamp) << "\","
+        << "\"EPC\":" << (hasEpc ? ("\"" + jsonEscape(epc) + "\"") : "null") << ','
+        << "\"tagId\":" << (hasEpc ? ("\"" + jsonEscape(epc) + "\"") : "null") << ','
+        << "\"RSSI\":" << toJsonNumberOrNull(hasRssi, rssi) << ','
+        << "\"antenna\":" << toJsonNumberOrNull(hasAntenna, antenna) << ','
+        << "\"readCount\":" << toJsonNumberOrNull(hasReadCount, readCount) << ','
+        << "\"frequency\":" << toJsonNumberOrNull(hasChannelIndex, channelIndex) << ','
+        << "\"phase\":null,"
+        << "\"doppler\":null,"
+        << "\"TID\":null,"
+        << "\"userMemory\":null"
+        << '}';
+
+    return oss.str();
 }
 
 } // namespace
@@ -127,6 +276,13 @@ void GenericLLRPReader::startInventory() {
     {
         std::lock_guard<std::mutex> lk(lastLogMtx_);
         lastLoggedMs_.clear();
+    }
+
+    // Ensure we are not reusing a stale ROSpec from previous runs.
+    try {
+        sendDeleteROSpec();
+    } catch (...) {
+        // Reader may report missing ROSpec; safe to ignore.
     }
 
     sendAddROSpec();
@@ -255,7 +411,7 @@ void GenericLLRPReader::sendAddROSpec() {
     // AISpec
     CAISpec *pAISpec = new CAISpec();
     llrp_u16v_t antennaIds(1);
-    antennaIds.m_pValue[0] = 1;
+    antennaIds.m_pValue[0] = 0; // 0 = all antennas (LLRP convention)
     pAISpec->setAntennaIDs(antennaIds);
 
     CAISpecStopTrigger *pAIStop = new CAISpecStopTrigger();
@@ -279,10 +435,10 @@ void GenericLLRPReader::sendAddROSpec() {
     pSelector->setEnableROSpecID(1);
     pSelector->setEnableSpecIndex(0);
     pSelector->setEnableAntennaID(1);
-    pSelector->setEnableChannelIndex(0);
+    pSelector->setEnableChannelIndex(1);
     pSelector->setEnablePeakRSSI(1);
-    pSelector->setEnableFirstSeenTimestamp(0);
-    pSelector->setEnableLastSeenTimestamp(0);
+    pSelector->setEnableFirstSeenTimestamp(1);
+    pSelector->setEnableLastSeenTimestamp(1);
     pSelector->setEnableTagSeenCount(1);
     pSelector->setEnableInventoryParameterSpecID(1);
     pSelector->setEnableAccessSpecID(0);
@@ -296,6 +452,11 @@ void GenericLLRPReader::sendAddROSpec() {
     sendRawMessage(frame.data(), frame.size());
     std::cout << "Sent ADD_ROSPEC (ROSpecID=" << DEFAULT_ROSPEC_ID << ")\n";
     delete pAddROSpec;
+}
+
+void GenericLLRPReader::sendDeleteROSpec() {
+    sendROSpecControl(21, 10, DEFAULT_ROSPEC_ID);
+    std::cout << "Sent DELETE_ROSPEC (ROSpecID=" << DEFAULT_ROSPEC_ID << ")\n";
 }
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -373,38 +534,55 @@ void GenericLLRPReader::handleReaderMessage(const std::vector<uint8_t> &frame) {
     } else if (pMsg->m_pType == &CRO_ACCESS_REPORT::s_typeDescriptor) {
         auto *report = dynamic_cast<CRO_ACCESS_REPORT*>(pMsg);
         if (report) {
+            size_t tagReports = 0;
+            std::vector<std::string> reportJsonEvents;
             for (auto it = report->beginTagReportData(); it != report->endTagReportData(); ++it) {
                 auto *td = *it;
-                std::string epc = "UNKNOWN";
-                if (td->getEPCParameter()) {
-                    std::ostringstream oss;
-                    auto *e96 = dynamic_cast<CEPC_96*>(td->getEPCParameter());
-                    if (e96) {
-                        for (int i = 0; i < 12; ++i)
-                            oss << std::hex << std::setw(2) << std::setfill('0')
-                                << (int)e96->getEPC().m_aValue[i];
-                        epc = oss.str();
-                    } else {
-                        auto *edata = dynamic_cast<CEPCData*>(td->getEPCParameter());
-                        if (edata) {
-                            llrp_u1v_t value = edata->getEPC();
-                            for (unsigned int i = 0; i < value.m_nBit / 8; ++i)
-                                oss << std::hex << std::setw(2) << std::setfill('0')
-                                    << (int)value.m_pValue[i];
-                            epc = oss.str();
-                        }
-                    }
-                }
+                ++tagReports;
+                const std::string epc = epcFromTagReport(td);
+                const bool hasEpc = !epc.empty();
 
                 std::string antenna  = td->getAntennaID()  ? std::to_string(td->getAntennaID()->getAntennaID())  : "N/A";
                 std::string rssi     = td->getPeakRSSI()   ? std::to_string(td->getPeakRSSI()->getPeakRSSI())    : "N/A";
                 std::string seenCnt  = td->getTagSeenCount()? std::to_string(td->getTagSeenCount()->getTagCount()): "N/A";
+
+                reportJsonEvents.push_back(buildTagEventJson(td));
+
+                // If EPC is absent/unsupported, still print the available report fields.
+                if (!hasEpc) {
+                    std::cout << "[GenericLLRPReader] Tag report without EPC"
+                              << " antenna=" << antenna
+                              << " rssi=" << rssi
+                              << " seenCount=" << seenCnt << "\n";
+                    continue;
+                }
 
                 if (shouldLogTag(epc))
                     std::cout << "[GenericLLRPReader] Tag detected EPC=" << epc
                               << " antenna=" << antenna
                               << " rssi=" << rssi
                               << " seenCount=" << seenCnt << "\n";
+            }
+
+            if (!reportJsonEvents.empty()) {
+                std::ostringstream inv;
+                inv << '{'
+                    << "\"eventType\":\"RFID_INVENTORY\","
+                    << "\"timestamp\":\"" << jsonEscape(nowIso8601Utc()) << "\","
+                    << "\"readerVendorProfile\":\"IMPINJ_ZEBRA_STYLE\","
+                    << "\"tags\":[";
+
+                for (size_t i = 0; i < reportJsonEvents.size(); ++i) {
+                    if (i) inv << ',';
+                    inv << reportJsonEvents[i];
+                }
+
+                inv << "]}";
+                std::cout << "[GenericLLRPReader][RFID_JSON_INVENTORY] " << inv.str() << "\n";
+            }
+
+            if (tagReports == 0) {
+                std::cout << "[GenericLLRPReader] RO_ACCESS_REPORT without TagReportData\n";
             }
         }
     } else if (pMsg->m_pType == &CERROR_MESSAGE::s_typeDescriptor) {

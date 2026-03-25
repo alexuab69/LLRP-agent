@@ -44,6 +44,12 @@ set(LTKCPP_SOURCES
 
 add_library(ltkcpp_built STATIC ${LTKCPP_SOURCES})
 
+# LTKCPP 1.0.0.5 generates many write-strings warnings in auto-generated code
+# on modern GCC/Clang. Keep project warnings clean without mutating vendor code.
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(ltkcpp_built PRIVATE -Wno-write-strings)
+endif()
+
 target_include_directories(ltkcpp_built PUBLIC
     ${LTKCPP_INCLUDE}        # provides out_ltkcpp.h and the installed headers
     ${LTKCPP_SRC_DIR}        # provides ltkcpp_platform.h from source
