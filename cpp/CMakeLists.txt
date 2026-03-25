@@ -72,6 +72,7 @@ set(AGENT_SOURCES
     src/llrp/Config.cpp
     src/reader/ReaderAdapter.cpp
     src/readers/GenericLLRPReader.cpp
+    src/readers/MockLLRPReader.cpp
 )
 
 if(ENABLE_M7E)

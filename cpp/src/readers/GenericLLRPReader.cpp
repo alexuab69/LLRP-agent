@@ -14,6 +14,7 @@ extern LLRP::CTypeRegistry *g_pTypeRegistry;
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -184,6 +185,22 @@ std::string buildTagEventJson(CTagReportData* td)
         << '}';
 
     return oss.str();
+}
+
+void appendInventoryJsonToFile(const std::string& jsonLine)
+{
+    const char* configuredPath = std::getenv("LLRP_JSON_OUTPUT_PATH");
+    const std::string outputPath =
+        (configuredPath && configuredPath[0] != '\0')
+            ? std::string(configuredPath)
+            : std::string("rfid_inventory_events.jsonl");
+
+    std::ofstream out(outputPath, std::ios::out | std::ios::app);
+    if (!out.is_open()) {
+        std::cerr << "[GenericLLRPReader] Could not open JSON output file: " << outputPath << "\n";
+        return;
+    }
+    out << jsonLine << '\n';
 }
 
 } // namespace
@@ -411,7 +428,7 @@ void GenericLLRPReader::sendAddROSpec() {
     // AISpec
     CAISpec *pAISpec = new CAISpec();
     llrp_u16v_t antennaIds(1);
-    antennaIds.m_pValue[0] = 0; // 0 = all antennas (LLRP convention)
+    antennaIds.m_pValue[0] = 1; // Force inventory on antenna port 1 only.
     pAISpec->setAntennaIDs(antennaIds);
 
     CAISpecStopTrigger *pAIStop = new CAISpecStopTrigger();
@@ -564,22 +581,22 @@ void GenericLLRPReader::handleReaderMessage(const std::vector<uint8_t> &frame) {
                               << " seenCount=" << seenCnt << "\n";
             }
 
-            if (!reportJsonEvents.empty()) {
-                std::ostringstream inv;
-                inv << '{'
-                    << "\"eventType\":\"RFID_INVENTORY\","
-                    << "\"timestamp\":\"" << jsonEscape(nowIso8601Utc()) << "\","
-                    << "\"readerVendorProfile\":\"IMPINJ_ZEBRA_STYLE\","
-                    << "\"tags\":[";
+            std::ostringstream inv;
+            inv << '{'
+                << "\"eventType\":\"RFID_INVENTORY\","
+                << "\"timestamp\":\"" << jsonEscape(nowIso8601Utc()) << "\","
+                << "\"readerVendorProfile\":\"IMPINJ_ZEBRA_STYLE\","
+                << "\"tags\":[";
 
-                for (size_t i = 0; i < reportJsonEvents.size(); ++i) {
-                    if (i) inv << ',';
-                    inv << reportJsonEvents[i];
-                }
-
-                inv << "]}";
-                std::cout << "[GenericLLRPReader][RFID_JSON_INVENTORY] " << inv.str() << "\n";
+            for (size_t i = 0; i < reportJsonEvents.size(); ++i) {
+                if (i) inv << ',';
+                inv << reportJsonEvents[i];
             }
+
+            inv << "]}";
+            const std::string inventoryJson = inv.str();
+            std::cout << "[GenericLLRPReader][RFID_JSON_INVENTORY] " << inventoryJson << "\n";
+            appendInventoryJsonToFile(inventoryJson);
 
             if (tagReports == 0) {
                 std::cout << "[GenericLLRPReader] RO_ACCESS_REPORT without TagReportData\n";

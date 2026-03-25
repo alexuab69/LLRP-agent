@@ -1,5 +1,6 @@
 #include "ReaderAdapter.h"
 #include "../readers/GenericLLRPReader.h"
+#include "../readers/MockLLRPReader.h"
 
 #ifdef LLRP_AGENT_ENABLE_M7E
 #include "../readers/ThingMagicM7EReader.h"
@@ -60,9 +61,29 @@ void ReaderAdapter::setReaderType(const std::string &type) {
     try {
         candidate->connect();
         realReader_ = std::move(candidate);
+        std::cout << "[ReaderAdapter] Successfully connected using reader type '" << type << "'\n";
     } catch (const std::exception &e) {
         std::cerr << "Could not connect using reader type '" << type << "': " << e.what() << "\n";
-        realReader_.reset();
+        
+        // Fallback: usar MockLLRPReader solo si se solicita explícitamente
+        const char *useMockEnv = std::getenv("LLRP_USE_MOCK_IF_UNAVAILABLE");
+        bool useMockFallback = useMockEnv && (std::string(useMockEnv) == "1" || std::string(useMockEnv) == "true");
+        
+        if (useMockFallback) {
+            std::cout << "[ReaderAdapter] LLRP_USE_MOCK_IF_UNAVAILABLE=true, falling back to MockLLRPReader\n";
+            try {
+                auto mockCandidate = std::make_unique<readers::MockLLRPReader>();
+                mockCandidate->connect();
+                realReader_ = std::move(mockCandidate);
+                std::cout << "[ReaderAdapter] Mock reader initialized successfully\n";
+            } catch (const std::exception &mockE) {
+                std::cerr << "Failed to initialize MockLLRPReader: " << mockE.what() << "\n";
+                realReader_.reset();
+            }
+        } else {
+            std::cout << "[ReaderAdapter] No reader available (set LLRP_USE_MOCK_IF_UNAVAILABLE=1 to use mock)\n";
+            realReader_.reset();
+        }
     }
 }
 

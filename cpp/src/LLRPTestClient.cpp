@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
 
     llrp::Config::load();
 
-    std::string host = "127.0.0.1";
+    std::string host = "localhost";
     int port         = llrp::Config::READER_PORT;
     int duration     = 10;
 
